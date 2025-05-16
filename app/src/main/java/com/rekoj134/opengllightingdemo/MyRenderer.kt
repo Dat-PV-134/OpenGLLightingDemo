@@ -91,7 +91,7 @@ class MyRenderer(private val context: Context) : GLSurfaceView.Renderer {
 
         // View matrix
         Matrix.setLookAtM(viewMatrix, 0,
-            2f, 2f, 5f,
+            2f, 2f, 8f,
             0f, 0f, 0f,
             0f, 1f, 0f
         )
