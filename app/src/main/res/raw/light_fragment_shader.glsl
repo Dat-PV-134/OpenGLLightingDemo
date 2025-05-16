@@ -1,6 +1,8 @@
 #version 320 es
 precision mediump float;
 
+in vec3 Normal;
+
 uniform vec3 objectColor;
 uniform vec3 lightColor;
 
