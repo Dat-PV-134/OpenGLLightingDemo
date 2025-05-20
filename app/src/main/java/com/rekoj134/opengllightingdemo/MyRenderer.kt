@@ -11,6 +11,8 @@ import java.nio.ByteOrder
 import java.nio.IntBuffer
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
+import kotlin.math.cos
+import kotlin.math.sin
 
 class MyRenderer(private val context: Context) : GLSurfaceView.Renderer {
 
@@ -68,6 +70,8 @@ class MyRenderer(private val context: Context) : GLSurfaceView.Renderer {
     private val viewMatrix = FloatArray(16)
     private val projectionMatrix = FloatArray(16)
 
+    private var angle = 0.0f
+
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
         glEnable(GL_DEPTH_TEST)
 
@@ -98,6 +102,8 @@ class MyRenderer(private val context: Context) : GLSurfaceView.Renderer {
         glBufferData(GL_ARRAY_BUFFER, vertices.size * Float.SIZE_BYTES, vertexBuffer, GL_STATIC_DRAW)
         glVertexAttribPointer(0, 3, GL_FLOAT, false, 6 * Float.SIZE_BYTES, 0)
         glEnableVertexAttribArray(0)
+        glVertexAttribPointer(1, 3, GL_FLOAT, false, 6 * Float.SIZE_BYTES, 3 * Float.SIZE_BYTES)
+        glEnableVertexAttribArray(1)
 
         // Light cube VAO (share same VBO)
         val lightVaoBuf = IntBuffer.allocate(1)
@@ -118,9 +124,16 @@ class MyRenderer(private val context: Context) : GLSurfaceView.Renderer {
     override fun onDrawFrame(gl: GL10?) {
         glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
 
-        // View matrix
+        angle += 0.5f
+        if (angle >= 360f) angle -= 360f
+
+        val radians = Math.toRadians(angle.toDouble()).toFloat()
+
+        val camX = (sin(radians.toDouble()) * 8).toFloat()
+        val camZ = (cos(radians.toDouble()) * 8).toFloat()
+
         Matrix.setLookAtM(viewMatrix, 0,
-            2f, 2f, 8f,
+            camX, 2f, camZ,
             0f, 0f, 0f,
             0f, 1f, 0f
         )
@@ -133,6 +146,7 @@ class MyRenderer(private val context: Context) : GLSurfaceView.Renderer {
         glUniformMatrix4fv(glGetUniformLocation(programCube, "projection"), 1, false, projectionMatrix, 0)
         glUniform3f(glGetUniformLocation(programCube, "objectColor"), 1f, 0.5f, 0.31f)
         glUniform3f(glGetUniformLocation(programCube, "lightColor"), 1f, 1f, 1f)
+        glUniform3f(glGetUniformLocation(programCube, "lightPos"), 1.2f, 1.0f, 2.0f)
         glBindVertexArray(VAO)
         glDrawArrays(GL_TRIANGLES, 0, 36)
 
