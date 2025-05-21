@@ -147,6 +147,7 @@ class MyRenderer(private val context: Context) : GLSurfaceView.Renderer {
         glUniform3f(glGetUniformLocation(programCube, "objectColor"), 1f, 0.5f, 0.31f)
         glUniform3f(glGetUniformLocation(programCube, "lightColor"), 1f, 1f, 1f)
         glUniform3f(glGetUniformLocation(programCube, "lightPos"), 1.2f, 1.0f, 2.0f)
+        glUniform3f(glGetUniformLocation(programCube, "viewPos"), camX, 2f, camZ)
         glBindVertexArray(VAO)
         glDrawArrays(GL_TRIANGLES, 0, 36)
 
